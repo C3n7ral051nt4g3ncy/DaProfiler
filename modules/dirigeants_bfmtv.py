@@ -3,7 +3,7 @@ from bs4      import BeautifulSoup
 
 def bfmtv_search(name,pren):
     try:
-        r = requests.get("https://dirigeants.bfmtv.com/recherche/q/{}5+{}6".format(name,pren))
+        r = requests.get(f"https://dirigeants.bfmtv.com/recherche/q/{name}5+{pren}6")
         page = r.content
         features = "html.parser"
         soup = BeautifulSoup(page, features)
@@ -14,7 +14,7 @@ def bfmtv_search(name,pren):
             fonction = soup.find('td',{'class':'verif_col4'}).text
             link = soup.find('a',{'class':'nom'})
             link = str(link).replace('<a class="nom" href="/','').split('"')[0]
-            link = ("https:/"+link)
+            link = f"https:/{link}"
             r = requests.get(link)
             page = r.content
             features = "html.parser"

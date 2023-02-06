@@ -3,7 +3,7 @@ from colorama import Fore
 from bs4      import BeautifulSoup
 
 def adresse_search(name,pren):
-    r = requests.get('https://www.118000.fr/search?part=1&who={} {}'.format(name,pren))
+    r = requests.get(f'https://www.118000.fr/search?part=1&who={name} {pren}')
     page = r.content
     features = "html.parser"
     soup = BeautifulSoup(page, features)
@@ -17,24 +17,25 @@ def adresse_search(name,pren):
         addr_full = (target_addr.text.replace(', voir sur la carte','').replace('\n',' ').strip())
         phon_full = (target_phon.text.strip())
 
-        if name.lower() in name_full.lower():
-            try:
-                r = requests.get('https://www.infos-numero.com/ajax/NumberInfo?num={}'.format(phon_full))
-                data = r.json()
-
-                type_tel = (data['info']['type'])
-                if type_tel == "FIXED_LINE":
-                    type_tel = "Fixe"
-                carrier = (data['info']['carrier'])
-                if len(carrier) <= 1:
-                    carrier = 0
-                    carrier = None
-                localisation = (data['info']['ville'])
-                text = {'Phone':phon_full,'Name':name_full,'Adress':addr_full,'Type_tel':type_tel,"Loc_phone":localisation,'carrier':carrier}
-                return text
-            except:
-                return  {'Phone':phon_full,'Name':name_full,'Adress':addr_full,'Type_tel':None,"Loc_phone":None,'carrier':None}
-        else:
+        if name.lower() not in name_full.lower():
             return None
+        try:
+            r = requests.get(
+                f'https://www.infos-numero.com/ajax/NumberInfo?num={phon_full}'
+            )
+            data = r.json()
+
+            type_tel = (data['info']['type'])
+            if type_tel == "FIXED_LINE":
+                type_tel = "Fixe"
+            carrier = (data['info']['carrier'])
+            if len(carrier) <= 1:
+                carrier = 0
+                carrier = None
+            localisation = (data['info']['ville'])
+            text = {'Phone':phon_full,'Name':name_full,'Adress':addr_full,'Type_tel':type_tel,"Loc_phone":localisation,'carrier':carrier}
+            return text
+        except:
+            return  {'Phone':phon_full,'Name':name_full,'Adress':addr_full,'Type_tel':None,"Loc_phone":None,'carrier':None}
     except AttributeError:
         return None

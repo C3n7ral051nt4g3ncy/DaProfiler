@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 def death_search(name,pren):
     try:
-        url = "https://www.avis-de-deces.net/avis-de-deces/?nomprenomdefunt={}".format(name)
+        url = f"https://www.avis-de-deces.net/avis-de-deces/?nomprenomdefunt={name}"
         r = requests.get(url)
         page = r.content
         features = "html.parser"
@@ -19,9 +19,6 @@ def death_search(name,pren):
             loc  = villes[i].text.strip()
             profile_list.append({'Name':name,'Loc':loc.replace('- ','')})
 
-        if len(profile_list) == 0:
-            return None
-        else:
-            return profile_list
+        return profile_list or None
     except:
         return None

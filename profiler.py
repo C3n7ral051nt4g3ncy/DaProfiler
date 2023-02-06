@@ -21,12 +21,9 @@ from modules  import mail_check
 from modules.api_modules import leakcheck_net
 from modules.visual      import logging
 
-banner = False 
-# Opening json report template
-data_file = open('modules/report.json','r')
-data_export = json.load(data_file)
-data_file.close()
-
+banner = False
+with open('modules/report.json','r') as data_file:
+    data_export = json.load(data_file)
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", help="Victim name")
 parser.add_argument('-l','--logging',help="Enable terminal logging (Optional)")
@@ -49,12 +46,16 @@ else:
     os.system('clear')
 
 print("DaProfiler - Inspired from Profiler CToS")
-print("Github : "+Fore.YELLOW+"https://github.com/dalunacrobate\n"+Fore.RESET)
+print(
+    f"Github : {Fore.YELLOW}"
+    + "https://github.com/dalunacrobate\n"
+    + Fore.RESET
+)
 print("\r")
 
 possible_usernames = []
 
-folder_name = "{}_{}".format(pren,name)
+folder_name = f"{pren}_{name}"
 
 try:
     os.mkdir('Reports')
@@ -62,7 +63,7 @@ except FileExistsError:
     pass
 
 try:
-    os.mkdir('Reports/{}'.format(folder_name))
+    os.mkdir(f'Reports/{folder_name}')
 except FileExistsError:
     pass
 
@@ -142,25 +143,24 @@ else:
 
 if output is not None:
     with open(output,'a+') as f:
-        f.write('Results on target : {} {} {}\n\n'.format(name,pren,email))
+        f.write(f'Results on target : {name} {pren} {email}\n\n')
         f.close()
 
 def write(typee,objectt):
-    if output is not None:
-        with open(str(output),'a+',encoding='utf-8') as f:
-            f.write('\n')
-            if len(typee) == 0:
-                pass
-            else:
-                f.write((typee)+"\n")
-            for i in range(len(typee)):
-                f.write('=')
-            f.write('\n')
-            if type(objectt) == list:
-                for i in objectt:
-                    f.write('- '+i+"\n")
-            elif type(objectt) == str:
-                f.write(objectt)
+    if output is None:
+        return
+    with open(str(output),'a+',encoding='utf-8') as f:
+        f.write('\n')
+        if len(typee) != 0:
+            f.write((typee)+"\n")
+        for _ in range(len(typee)):
+            f.write('=')
+        f.write('\n')
+        if type(objectt) == list:
+            for i in objectt:
+                f.write(f'- {i}' + "\n")
+        elif type(objectt) == str:
+            f.write(objectt)
 
 tree = Tree()
 tree.create_node(f"{pren} {name} {email}", 1)

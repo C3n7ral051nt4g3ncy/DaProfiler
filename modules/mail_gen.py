@@ -4,18 +4,18 @@ from modules import mail_check
 
 def check(name,pren):
     results = [
-        "{}.{}@gmail.com".format(name,pren),
-        "{}.{}@yahoo.com".format(name,pren),
-        "{}{}@yahoo.com".format(name,pren),
-        "{}{}@yahoo.fr".format(name,pren),
-        "{}.{}@aol.com".format(name,pren),
-        "{}{}@aol.com".format(name,pren),
-        "{}.{}@hotmail.com".format(name,pren),
-        "{}{}@hotmail.com".format(name,pren),
-        "{}{}@hotmail.fr".format(name,pren),
-        "{}{}@outlook.fr".format(name,pren),
-        "{}.{}@outlook.com".format(name,pren),
-        "{}{}@outlook.com".format(name,pren),    
+        f"{name}.{pren}@gmail.com",
+        f"{name}.{pren}@yahoo.com",
+        f"{name}{pren}@yahoo.com",
+        f"{name}{pren}@yahoo.fr",
+        f"{name}.{pren}@aol.com",
+        f"{name}{pren}@aol.com",
+        f"{name}.{pren}@hotmail.com",
+        f"{name}{pren}@hotmail.com",
+        f"{name}{pren}@hotmail.fr",
+        f"{name}{pren}@outlook.fr",
+        f"{name}.{pren}@outlook.com",
+        f"{name}{pren}@outlook.com",
     ]
     valid_mails = []
     for i in results:
@@ -31,27 +31,26 @@ def skype2email(name,pren):
     features = "html.parser"
     soup = BeautifulSoup(page, features)
 
-    profiles = soup.find_all('span',{'class':'search-results__block-info-username'})[0:5]
+    profiles = soup.find_all(
+        'span', {'class': 'search-results__block-info-username'}
+    )[:5]
 
-    profiless = []
-
-    for i in profiles:
-        if "live:." in i.text:
-            pass
-        else:
-            profiless.append(i.text.replace('live:','').replace('_1',''))
-
+    profiless = [
+        i.text.replace('live:', '').replace('_1', '')
+        for i in profiles
+        if "live:." not in i.text
+    ]
     valid_emails = []
 
     for i in profiless:
         emails = [
-            i+"@aol.com",
-            i+"@yahoo.com",
-            i+"@gmail.com",
-            i+"@hotmail.com",
-            i+"@hotmail.fr",
-            i+"@outlook.fr",
-            i+"@outlook.com"
+            f"{i}@aol.com",
+            f"{i}@yahoo.com",
+            f"{i}@gmail.com",
+            f"{i}@hotmail.com",
+            f"{i}@hotmail.fr",
+            f"{i}@outlook.fr",
+            f"{i}@outlook.com",
         ]
         for i in emails:
             a = mail_check.verify(mail=i)

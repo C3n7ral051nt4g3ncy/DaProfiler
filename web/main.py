@@ -151,14 +151,10 @@ y = json.loads(x.text)
 
 print("Website Done")
 
-f = open("index.html", "w")
-f.write(y['content']["webpage"])
-f.close()
-
-f = open("./cg/data.json", "w")
-f.write(y['content']["arbre"])
-f.close()
-
+with open("index.html", "w") as f:
+    f.write(y['content']["webpage"])
+with open("./cg/data.json", "w") as f:
+    f.write(y['content']["arbre"])
 import http.server
 import http.server, socketserver, webbrowser
 import webbrowser
